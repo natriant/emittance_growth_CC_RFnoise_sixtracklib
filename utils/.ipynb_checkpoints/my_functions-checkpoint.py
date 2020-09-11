@@ -5,7 +5,7 @@ def bunch_length_m_to_rad(L, clight, f_RF):
     phi = L*(2*np.pi*f_RF)/clight
     return phi
 
-def cmpt_bunch_length_correction_factor(sigma_phi, phase_noise = True):
+def cmpt_bunch_length_correction_factor(sigma_phi, noise_type):
     '''
     This function computes the correction factor, C, due to the bunch length, sigma_phi, assuming a 2D gaussian longitudinal distribution.
     - phase_noise = True (False): computes C for phase (amplitude) noise case
@@ -17,7 +17,7 @@ def cmpt_bunch_length_correction_factor(sigma_phi, phase_noise = True):
     Note: Possibility to compute the factors for a pillbox distribution which is the other extreme (email from Themis). 
     '''
 
-    if phase_noise:
+    if noise_type == 'PN':
         Io = iv(0, sigma_phi**2) # The first argument is the order
         I2l_sum = 0
         for order in range(2, 10000, 2):
@@ -25,7 +25,7 @@ def cmpt_bunch_length_correction_factor(sigma_phi, phase_noise = True):
          
         C = np.exp(-sigma_phi**2)*(Io+2*I2l_sum)
         
-    else:
+    if noise_type == 'AN':
         I2ll_sum = 0
         for order in range(0, 10000, 2):
             I2ll_sum = I2ll_sum + iv(order+1, sigma_phi**2)
